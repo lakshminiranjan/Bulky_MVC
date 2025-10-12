@@ -1,14 +1,12 @@
-using Bulky.DataAccess.Data;
-using Bulky.DataAccess.Repository.IRepository;
-using Microsoft.EntityFrameworkCore;
+using DI_Service_Lifetime.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSingleton<ISingletonGuidService,SingletonGuidService>();
+builder.Services.AddScoped<IScopedGuidService,ScopedGuidService>();
+builder.Services.AddTransient<ITransientGuidService,TransientGuidService>();
 
 var app = builder.Build();
 
@@ -29,6 +27,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
